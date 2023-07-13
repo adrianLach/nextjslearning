@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "e2e": "start-server-and-test dev http://localhost:3000 \"cypress run --e2e --browser chrome\"",
+    "component": "cypress run --component"
   },
   "dependencies": {
     "eslint": "8.44.0",
@@ -17,6 +19,8 @@
   },
   "devDependencies": {
     "@types/node": "20.4.2",
-    "@types/react": "18.2.14"
+    "@types/react": "18.2.14",
+    "cypress": "^12.17.1",
+    "start-server-and-test": "^2.0.0"
   }
 }
