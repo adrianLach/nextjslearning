@@ -38,3 +38,5 @@ cypress/downloads
 cypress/screenshots
 cypress/vidoes
 cypress/fixtures
+
+.env
