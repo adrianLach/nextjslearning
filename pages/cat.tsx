@@ -18,7 +18,7 @@ const Index = () => {
     return (
         <>
             <div style={{display: 'flex', alignContent: 'center', justifyContent: 'center', margin: '20px'}}>
-                <button style={{width: '20%', padding: '10px'}} onClick={() => getCat()}>Get Cat</button>
+                <button style={{width: '20em', padding: '10px'}} onClick={() => getCat()}>Get Cat</button>
             </div>
             {image && <img src={image.url} width={'100%'} alt="cat"></img>}
         </>
