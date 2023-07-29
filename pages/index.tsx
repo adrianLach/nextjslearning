@@ -1,4 +1,5 @@
 import { ChangeEvent, ChangeEventHandler, InputHTMLAttributes, ReactElement, ReactNode, ReactPortal, TextareaHTMLAttributes, useEffect, useState } from "react"
+import showdown from 'showdown'
 
 const Button = {
   Submit: (props: InputHTMLAttributes<HTMLInputElement>) => <input {...props} type="submit" className={"font-sans bg-green-200 active:bg-green-400 active:border-green-700 hover:bg-green-300 rounded hover:rounded-lg border-2 border-green-500 px-8 py-1 ease-in duration-100" + ' ' + props.className}></input>,
@@ -18,15 +19,19 @@ const Stack = {
 }
 
 const Container = {
-  Box: (props: { children: ReactNode, className?: string }) => <div className="mx-2 my-2">{props.children}</div>
+  Box: (props: { children: ReactNode, className?: string }) => <div className="flex flex-row space-x-2 mx-2 my-2">{props.children}</div>
 }
 
-const useInputValue = (options?: { initial?: string | number, qualifier?: RegExp }) => {
+const useInputValue = (options?: { initial?: string | number, qualifier?: RegExp, onChange?: (event: ChangeEvent<HTMLInputElement>) => string | number | readonly string[] }) => {
 
   const [value, setValue] = useState<string | number | readonly string[]>(options?.initial || '')
   const [qualified, setQualified] = useState(false)
 
   const onChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (event: ChangeEvent<HTMLInputElement>) => {
+
+    if (options?.onChange)
+      return setValue(options.onChange(event))
+
     setValue(event.currentTarget.value)
   }
 
@@ -44,28 +49,24 @@ const useInputValue = (options?: { initial?: string | number, qualifier?: RegExp
 
 const Index = () => {
 
-  const textInput = useInputValue({ initial: 'Hello World' })
-  const numberInput = useInputValue({ initial: 187 })
+  const [md, setMd] = useState('')
+
+  const textInput = useInputValue({
+    onChange: (e) => {
+
+      const converter = new showdown.Converter()
+      const text = e.currentTarget.value
+      setMd(converter.makeHtml(text))
+
+      return e.currentTarget.value
+    }
+  })
 
   return (
     <>
       <Container.Box>
-        <Stack.Horizontal className="min-w-full">
-          <Stack.Vertical>
-            <Input.Text {...textInput}></Input.Text>
-            <Input.Number {...numberInput}></Input.Number>
-          </Stack.Vertical>
-          <Stack.Vertical>
-            <Input.Textarea style={{ minHeight: '60px' }}></Input.Textarea>
-          </Stack.Vertical>
-        </Stack.Horizontal>
-      </Container.Box>
-      <Container.Box>
-        <Stack.Horizontal>
-          <Button.Submit value={'Save'}></Button.Submit>
-          <Button.Confirm value={'Save Draft'}></Button.Confirm>
-          <Button.Cancel value={'Discard'}></Button.Cancel>
-        </Stack.Horizontal>
+        <Input.Textarea {...textInput} style={{ minHeight: '600px', minWidth: '600px' }}></Input.Textarea>
+        <div dangerouslySetInnerHTML={{ __html: md }} style={{ minHeight: '600px', minWidth: '600px' }}></div>
       </Container.Box>
     </>
   )
