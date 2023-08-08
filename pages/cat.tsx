@@ -1,5 +1,5 @@
-import Image from "next/image"
-import { useState } from "react"
+import Image from 'next/image'
+import { useState } from 'react'
 
 const Index = () => {
 
@@ -7,7 +7,7 @@ const Index = () => {
 
     const getCat = async () => {
         const cat = await fetch(`https://api.thecatapi.com/v1/images/search?api_key=${process.env.CAT_KEY || ''}`, {})
-        .then(r => r.json())
+            .then(r => r.json())
 
         setImage(cat[0])
 
@@ -20,7 +20,7 @@ const Index = () => {
             <div style={{display: 'flex', alignContent: 'center', justifyContent: 'center', margin: '20px'}}>
                 <button style={{width: '20em', padding: '10px'}} onClick={() => getCat()}>Get Cat</button>
             </div>
-            {image && <img src={image.url} width={'100%'} alt="cat"></img>}
+            {image && <Image src={image.url} width={1000} height={1000} alt="cat"></Image>}
         </>
     )
 }
