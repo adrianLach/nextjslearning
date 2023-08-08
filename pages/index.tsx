@@ -54,7 +54,7 @@ const Index = () => {
                             <p className='w-48 font-sans text-base content-center leading-10'>Format proDoppik</p>
                             <input type="text" className={'rounded border-2 px-2 py-1 border-sky-500 grow'} value={formatPDInput} onChange={(e) => setFormatPDInput(e.currentTarget.value)}></input>
                         </div>
-                        <textarea className={'h-full rounded border-2 px-2 py-1 border-sky-500 '} readOnly value={formula} style={{minHeight: '400px'}}></textarea>,
+                        <textarea className={'h-full rounded border-2 px-2 py-1 border-sky-500 '} readOnly value={formula} style={{minHeight: '400px'}}></textarea>
                     </div>
                 </div>
             </div>
