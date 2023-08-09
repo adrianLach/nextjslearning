@@ -43,7 +43,7 @@ const Index = () => {
 
     return (
         <>
-            <div className="flex w-full space-x-2 p-4 content-center ">
+            <div className="flex w-2/3 space-x-2 p-4 content-center" style={{margin: 'auto'}}>
                 <div className="grow p-2">
                     <div className={'flex flex-col space-y-2'}>
                         <div className='flex'>
