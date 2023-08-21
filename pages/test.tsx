@@ -1,56 +1,67 @@
-import { Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Button, Card, CardBody, CardFooter, CardHeader, Center, Checkbox, Flex, IconButton, Show } from '@chakra-ui/react'
-import {ArrowLeftIcon} from '@chakra-ui/icons'
-import { signIn, signOut, useSession } from 'next-auth/react'
+import { Button, Flex, Spacer, Stack, Td, Th, Tr } from '@chakra-ui/react'
+import { PlusSquareIcon } from '@chakra-ui/icons'
+import TableCard from 'components/TableCard'
 
 const Test = () => {
 
-    const {data: session} = useSession()
-
-    const LogInOut = () => {
-        if(!session)
-            return <Button onClick={() => signIn()}>Sign In</Button>
-        return <Button onClick={() => signOut()}>Sign Out</Button>
+    const currency = (num: number) => {
+        return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(num)
     }
 
     return (
         <>
-            <Flex direction={'column'} h={'100vh'} p={'5px'} pt={'0px'}>
-                <Center flex={1}>
-                    <LogInOut></LogInOut>
-                </Center>
-                <Flex h={'100%'}>
-                    <Flex direction={'column'}>
-                        <Box flex={1}>
-                            <Show breakpoint='(min-width: 600px)'>
-                                <Center border={'1px'} w={'300px'}>Nav</Center>
-                            </Show>
-                        </Box>
-                        <IconButton aria-label='toggle-menu' icon={<ArrowLeftIcon/>}></IconButton>
+            <Stack>
+                <Stack direction={'row'}>
+                    <Flex w={'100%'}>
+                        <Spacer></Spacer>
+                        <Button leftIcon={<PlusSquareIcon />} variant='ghost'>
+                            New
+                        </Button>
                     </Flex>
-                    <Card flex={1}>
-                        <CardHeader>
-                            <Center>
-                                <Breadcrumb>
-                                    <BreadcrumbItem>
-                                        <BreadcrumbLink href='#'>Home</BreadcrumbLink>
-                                    </BreadcrumbItem>
-                                    <BreadcrumbItem>
-                                        <BreadcrumbLink href='#'>Test</BreadcrumbLink>
-                                    </BreadcrumbItem>
-                                    <BreadcrumbItem isCurrentPage>
-                                        <BreadcrumbLink href='#'>Utils</BreadcrumbLink>
-                                    </BreadcrumbItem>
-                                </Breadcrumb>
-                            </Center>
-                        </CardHeader>
-                        <CardBody>
-                            <Checkbox>Checkbox</Checkbox>
-                        </CardBody>
-                        <CardFooter>
-                        </CardFooter>
-                    </Card>
-                </Flex>
-            </Flex>
+                </Stack>
+                <TableCard
+                    title='Income'
+                    th={<><Th>Description</Th><Th isNumeric>Amount</Th></>}
+                    trs={
+                        <>
+                            <Tr>
+                                <Td>Salary</Td>
+                                <Td isNumeric>{currency(2050)}</Td>
+                            </Tr>
+                            <Tr>
+                                <Td>Papa</Td>
+                                <Td isNumeric>{currency(400)}</Td>
+                            </Tr>
+                        </>
+                    }
+                    footerText={'Total: ' + currency(2450)}
+                />
+                <TableCard
+                    title='Apartment'
+                    th={<><Th>Description</Th><Th isNumeric>Amount</Th></>}
+                    trs={
+                        <>
+                            <Tr>
+                                <Td>Rent</Td>
+                                <Td isNumeric>{currency(958.44)}</Td>
+                            </Tr>
+                            <Tr>
+                                <Td>Electricity</Td>
+                                <Td isNumeric>{currency(53)}</Td>
+                            </Tr>
+                            <Tr>
+                                <Td>Internet Provider</Td>
+                                <Td isNumeric>{currency(59.70)}</Td>
+                            </Tr>
+                            <Tr>
+                                <Td>ARD</Td>
+                                <Td isNumeric>{currency(18.36)}</Td>
+                            </Tr>
+                        </>
+                    }
+                    footerText={'Total: ' + currency(1089.50)}
+                />
+            </Stack>
         </>
     )
 }

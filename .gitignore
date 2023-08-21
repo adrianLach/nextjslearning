@@ -40,3 +40,4 @@ cypress/vidoes
 cypress/fixtures
 
 .env
+.vscode/settings.json

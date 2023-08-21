@@ -4,7 +4,7 @@ import { GetServerSideProps } from 'next'
 import dbConnect from 'src/dbConnect'
 import clientPromise from 'src/mongodb'
 
-const TableView = (props: {table: string, data: string}) => {
+const TableView = (props: { table: string, data: string }) => {
 
     const data = JSON.parse(props.data) as WithId<Document>[]
 
@@ -30,7 +30,6 @@ const TableView = (props: {table: string, data: string}) => {
                         </Table>
                     </TableContainer>
                 </CardBody>
-
                 <CardFooter>
                     <Text>Table Contents for <b>{props.table}</b></Text>
                 </CardFooter>
