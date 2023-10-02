@@ -1,5 +1,6 @@
 import { PlusSquareIcon } from '@chakra-ui/icons'
-import { Button, Flex, Heading, Spacer, Stack, Td, Text, Th, Tr } from '@chakra-ui/react'
+import { Button, Flex, Heading, Spacer, Stack, Td, Text, Th, Tr, Wrap, WrapItem } from '@chakra-ui/react'
+import BudgetCard from 'components/BudgetCard'
 import TableCard from 'components/TableCard'
 import { GetServerSideProps } from 'next'
 import Link from 'next/link'
@@ -20,7 +21,7 @@ const BudgetView = (props: { data: string }) => {
     const difference = budgetsPositive.reduce((a, b) => a + b.amount, 0) - budgetsNegative.reduce((a, b) => a + b.amount, 0)
 
     return (
-        <Stack>
+        <Stack paddingBottom={'100px'}>
             <Stack direction={'row'}>
                 <Flex w={'100%'}>
                     <Spacer></Spacer>
@@ -31,77 +32,72 @@ const BudgetView = (props: { data: string }) => {
                     </Link>
                 </Flex>
             </Stack>
-            <TableCard
-                title={<Heading size={'md'}>Total</Heading>}
-                th={
-                    <>
-                        <Td>Budget</Td>
-                        <Td isNumeric>Amount</Td>
-                        <Td isNumeric>Total</Td>
-                    </>}
-                trs={
-                    <>
-                        {budgetsPositive.map((e, i) => {
-                            return (
-                                <Tr key={i}>
-                                    <Td>{e.name}</Td>
-                                    <Td isNumeric color={'green'}>{currency(e.amount)}</Td>
-                                    <Td isNumeric color={'green'}></Td>
-                                </Tr>
-                            )
-                        })}
-                        {budgetsPositive &&
-                            <Tr>
-                                <Td><Text as={'b'}>Credit Total</Text></Td>
-                                <Td isNumeric color={'green'}></Td>
-                                <Td isNumeric color={'green'}><Text as={'b'}>{currency(budgetsPositive.reduce((a, b) => a + b.amount, 0))}</Text></Td>
-                            </Tr>
-                        }
-                        {budgetsNegative.map((e, i) => {
-                            return (
-                                <Tr key={i}>
-                                    <Td>{e.name}</Td>
-                                    <Td isNumeric color={'red'}>{currency(e.amount)}</Td>
-                                    <Td isNumeric color={'red'}></Td>
-                                </Tr>
-                            )
-                        })}
-                        {budgetsNegative &&
-                            <Tr>
-                                <Td><Text as={'b'}>Budget Total</Text></Td>
-                                <Td isNumeric color={'red'}></Td>
-                                <Td isNumeric color={'red'}><Text as={'b'}>{currency(budgetsNegative.reduce((a, b) => a + b.amount, 0))}</Text></Td>
-                            </Tr>
-                        }
-                        {budgetsNegative && budgetsPositive &&
-                            <Tr>
-                                <Td><Text as={'b'}>Difference</Text></Td>
-                                <Td isNumeric color={'red'}></Td>
-                                <Td isNumeric color={difference >= 0 ? 'green' : 'red'}><Text as={'b'}>{currency(difference)}</Text></Td>
-                            </Tr>
-                        }
-                    </>
-                }
-            />
-            {data.map((e, i) => (
-                <>
-                    <TableCard key={i}
-                        title={<Link href={`/budgets/${e.name}`}><Heading size={'md'}>{e.name}</Heading></Link>}
-                        th={<><Th>Description</Th><Th isNumeric>Amount</Th></>}
+            <Wrap spacing={30} justify={'center'}>
+                <WrapItem>
+                    <TableCard
+                        title={<Heading size={'md'}>Total</Heading>}
+                        th={
+                            <>
+                                <Th>Budget</Th>
+                                <Th isNumeric>Amount</Th>
+                                <Th isNumeric>Total</Th>
+                            </>}
                         trs={
                             <>
-                                {e.budgets && e.budgets.map(((e, i) => (
-                                    <Tr key={i}>
-                                        <Td>{e.name}</Td>
-                                        <Td isNumeric>{currency(e.amount)}</Td>
+                                {budgetsPositive.map((e, i) => {
+                                    return (
+                                        <Tr key={i}>
+                                            <Td>{e.name}</Td>
+                                            <Td isNumeric color={'green'}>{currency(e.amount)}</Td>
+                                            <Td isNumeric color={'green'}></Td>
+                                        </Tr>
+                                    )
+                                })}
+                                {budgetsPositive &&
+                                    <Tr>
+                                        <Td><Text as={'b'}>Credit Total</Text></Td>
+                                        <Td isNumeric color={'green'}></Td>
+                                        <Td isNumeric color={'green'}><Text as={'b'}>{currency(budgetsPositive.reduce((a, b) => a + b.amount, 0))}</Text></Td>
                                     </Tr>
-                                )))}
+                                }
+                                {budgetsNegative.map((e, i) => {
+                                    return (
+                                        <Tr key={i}>
+                                            <Td>{e.name}</Td>
+                                            <Td isNumeric color={'red'}>{currency(e.amount)}</Td>
+                                            <Td isNumeric color={'red'}></Td>
+                                        </Tr>
+                                    )
+                                })}
+                                {budgetsNegative &&
+                                    <Tr>
+                                        <Td><Text as={'b'}>Budget Total</Text></Td>
+                                        <Td isNumeric color={'red'}></Td>
+                                        <Td isNumeric color={'red'}><Text as={'b'}>{currency(budgetsNegative.reduce((a, b) => a + b.amount, 0))}</Text></Td>
+                                    </Tr>
+                                }
+                                {budgetsNegative && budgetsPositive &&
+                                    <Tr>
+                                        <Td><Text as={'b'}>Difference</Text></Td>
+                                        <Td isNumeric color={'red'}></Td>
+                                        <Td isNumeric color={difference >= 0 ? 'green' : 'red'}><Text as={'b'}>{currency(difference)}</Text></Td>
+                                    </Tr>
+                                }
                             </>
                         }
-                        footerText={<Text>{'Total: ' + currency(e.budgets?.reduce((a, b) => a + b.amount, 0) || 0)}</Text>}
                     />
-                </>
-            ))}
+                </WrapItem>
+                {data.map((e, i) => (
+                    <>
+                        <WrapItem>
+                            <BudgetCard
+                                key={i}
+                                budget={e}
+                            />
+                        </WrapItem>
+                    </>
+                ))}
+            </Wrap>
         </Stack>
     )
 }

@@ -10,11 +10,11 @@ export interface TableCardProps {
 
 const TableCard = (props: TableCardProps) => {
 
-    return <Card variant={'outline'}>
+    return <Card variant={'outline'} height={'100%'} minWidth={'400px'}>
         <CardHeader>
-            <Center>
+            <Flex width={'100%'} justifyContent={'space-between'} minHeight={'32px'}>
                 {props.title}
-            </Center>
+            </Flex>
         </CardHeader>
         <CardBody >
             <TableContainer>

@@ -1,63 +1,107 @@
+import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Button, Card, CardBody, CardFooter, Flex, FormControl, FormLabel, Input, Select, Stack } from '@chakra-ui/react'
+import { GetServerSideProps } from 'next'
 import { useEffect, useState } from 'react'
+import { find } from 'src/budget/BudgetDA'
+import { IBooking, IBudget } from 'src/types'
 
+export const getServerSideProps: GetServerSideProps = async () => {
 
-const Index = () => {
+    const docs = await find()
 
-    const [formatFAInput, setFormatFAInput] = useState('')
-    const [formatPDInput, setFormatPDInput] = useState('')
-    const [formula, setFormula] = useState('')
+    return {
+        props: {
+            budgets: JSON.stringify(docs)
+        }
+    }
+
+}
+const Index = (props: { budgets: string }) => {
+
+    const budgets = JSON.parse(props.budgets) as IBudget[]
+
+    const [selectedBudgetId, setSelectedBudgetId] = useState('')
+    const [selectedBudget, setSelectedBudget] = useState<IBudget>()
+    const [selectedSubBudget, setSelectedSubBudget] = useState('')
+
+    const [amount, setAmount] = useState(0)
+
+    const [date, setDate] = useState('')
 
     useEffect(() => {
-        
-        const formatFA = formatFAInput
-        const formatPD = formatPDInput
 
-        let _formula = ''
-        let index = 0, length = 0
+        setSelectedBudget(budgets.find((e) => e._id.toString() === selectedBudgetId))
 
-        let err = false
+    }, [selectedBudgetId])
 
-        formatPD.split('/').forEach(e => {
-            
-            index = formatFA.indexOf(e, index + length)
-            length = e.length
+    useEffect(() => {
 
-            if(e.length == 0)
-                return
+        setSelectedSubBudget('')
 
-            if(index < 0) {
-                _formula = `[Fehler] ${e} wurde nicht in Format FA gefunden. Eingabe prüfen!`
-                err = true
-            }
+    }, [selectedBudget])
 
-            if(err)
-                return
+    useEffect(() => {
+        selectedBudget && setAmount(selectedBudget.budgets.find(e => e.name == selectedSubBudget)?.amount || 0)
+    }, [selectedSubBudget])
 
-            _formula = _formula + `[SUBSTR([SELF]:${index + 1}:${length})]${'/'}`
-
+    const save = async () => {
+        const res = await fetch('/api/bookings', {
+            method: 'POST',
+            body: JSON.stringify({
+                budgetId: selectedBudgetId,
+                budgetName: selectedSubBudget,
+                amount: amount,
+                date: new Date(Date.parse(date))
+            } as IBooking)
         })
+    }
 
-        setFormula(_formula.replace(/^\/+|\/+$/g, ''))
-
-    }, [formatFAInput, formatPDInput])
+    const canSave = selectedBudget !== undefined && selectedSubBudget !== '' && amount !== 0 && date !== ''
 
     return (
         <>
-            <div className="flex w-2/3 space-x-2 p-4 content-center" style={{margin: 'auto'}}>
-                <div className="grow p-2">
-                    <div className={'flex flex-col space-y-2'}>
-                        <div className='flex'>
-                            <p className='w-48 font-sans text-base content-center leading-10'>Format FA</p>
-                            <input type="text" className={'rounded border-2 px-2 py-1 border-sky-500 grow'} value={formatFAInput} onChange={(e) => setFormatFAInput(e.currentTarget.value)}></input>
-                        </div>
-                        <div className='flex'>
-                            <p className='w-48 font-sans text-base content-center leading-10'>Format proDoppik</p>
-                            <input type="text" className={'rounded border-2 px-2 py-1 border-sky-500 grow'} value={formatPDInput} onChange={(e) => setFormatPDInput(e.currentTarget.value)}></input>
-                        </div>
-                        <textarea className={'h-full rounded border-2 px-2 py-1 border-sky-500 '} readOnly value={formula} style={{minHeight: '400px'}}></textarea>
-                    </div>
-                </div>
-            </div>
+            <Stack>
+                <Accordion allowToggle defaultIndex={[0]}>
+                    <AccordionItem>
+                        <AccordionButton>
+                            <Box as="span" flex='1' textAlign='left'>
+                                Add New Booking
+                            </Box>
+                            <AccordionIcon />
+                        </AccordionButton>
+                        <AccordionPanel pb={4}>
+                            <Card variant={'outline'}>
+                                <CardBody>
+                                    <FormControl>
+                                        <FormLabel>Budget</FormLabel>
+                                        <Select placeholder='Select a budget' value={selectedBudgetId} onChange={(e) => setSelectedBudgetId(e.target.value)}>
+                                            {budgets && budgets.map((e, i) => <option key={i} value={e._id.toString()}>{e.name}</option>)}
+                                        </Select>
+                                    </FormControl>
+                                    <FormControl>
+                                        <FormLabel>Sub Budget</FormLabel>
+                                        <Select placeholder='Select a sub budget' isDisabled={!selectedBudget} value={selectedSubBudget} onChange={(e) => setSelectedSubBudget(e.target.value)}>
+                                            {selectedBudget && selectedBudget.budgets.map((e, i) => <option key={i} value={e.name}>{e.name}</option>)}
+                                        </Select>
+                                    </FormControl>
+                                    <FormControl>
+                                        <FormLabel>Date</FormLabel>
+                                        <Input placeholder="Select Date and Time" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+                                    </FormControl>
+                                    <FormControl>
+                                        <FormLabel>Amount</FormLabel>
+                                        <Input value={amount == 0 ? '' : amount} onChange={(e) => setAmount(+e.target.value)} type='number' />
+                                    </FormControl>
+                                </CardBody>
+                                <CardFooter>
+                                    <Flex w={'100%'}>
+                                        <Button w={'100%'} colorScheme='green' isDisabled={!canSave} onClick={() => save()}>Save Booking</Button>
+                                    </Flex>
+                                </CardFooter>
+                            </Card>
+                        </AccordionPanel>
+                    </AccordionItem>
+                </Accordion>
+            </Stack>
         </>
     )
 }
