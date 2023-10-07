@@ -1,7 +1,10 @@
 import { ObjectId } from 'mongodb'
 import dbConnect from 'src/dbConnect'
 import clientPromise from 'src/mongodb'
-import { IBooking } from 'src/types'
+
+interface IBooking {
+    an: any
+}
 
 const find = async (q?: {id?: string}) => {
 

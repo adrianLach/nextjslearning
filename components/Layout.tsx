@@ -25,9 +25,6 @@ const Layout = ({ children }) => {
                             <MenuItem onClick={() => router.push('/')}>
                                 Home
                             </MenuItem>
-                            <MenuItem onClick={() => router.push('/budgets')}>
-                                Budgets
-                            </MenuItem>
                         </MenuList>
                     </Menu>
                     <Menu>
