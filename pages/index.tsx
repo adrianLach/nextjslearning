@@ -19,10 +19,10 @@ const Index = () => {
 
         let delimeter = ''
 
-        if formatPDInput.indexOf('/') > 0
+        if (formatPDInput.indexOf('/') > 0)
             delimeter = '/'
         
-        if formatPDInput.indexOf(' ') > 0
+        if (formatPDInput.indexOf(' ') > 0)
             delimeter = ' '
 
         formatPD.split(delimeter).forEach(e => {
