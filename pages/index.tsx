@@ -17,7 +17,15 @@ const Index = () => {
 
         let err = false
 
-        formatPD.split('/').forEach(e => {
+        let delimeter = ''
+
+        if (formatPDInput.indexOf('/') > 0)
+            delimeter = '/'
+        
+        if (formatPDInput.indexOf(' ') > 0)
+            delimeter = ' '
+
+        formatPD.split(delimeter).forEach(e => {
             
             index = formatFA.indexOf(e, index + length)
             length = e.length
@@ -33,7 +41,7 @@ const Index = () => {
             if(err)
                 return
 
-            _formula = _formula + `[SUBSTR([SELF]:${index + 1}:${length})]${'/'}`
+            _formula = _formula + `[SUBSTR([SELF]:${index + 1}:${length})]${delimeter}`
 
         })
 
